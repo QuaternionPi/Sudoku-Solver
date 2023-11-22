@@ -22,6 +22,16 @@ Sudoku::Sudoku(int _size, const int *input)
         cells[i] = Cell(val);
     }
 }
+Sudoku::Sudoku(const Sudoku *input)
+{
+    size = input->Size();
+    cells = new Cell[NumberOfCells()];
+    for (int i = 0; i < NumberOfCells(); i++)
+    {
+        int val = input->cells[i].GetValue();
+        cells[i] = Cell(val);
+    }
+}
 Sudoku::~Sudoku()
 {
     delete cells;
@@ -102,6 +112,10 @@ bool Sudoku::IsValid(Group group, int number) const
 }
 bool Sudoku::IsValidPlacement(int x, int y, int val) const
 {
+    if (IsCellGiven(x, y) == true)
+    {
+        return false;
+    }
     int rowValues[GroupSize()];
     int colValues[GroupSize()];
     int boxValues[GroupSize()];
@@ -161,10 +175,63 @@ int Sudoku::GroupSize() const
 {
     return size * size;
 }
+int Sudoku::Size() const
+{
+    return size;
+}
 Sudoku *Sudoku::Solution() const
 {
-    int values[81];
-    return new Sudoku(3, values);
+    Sudoku *sudoku = new Sudoku(this);
+    int index = 0;
+    int x = index % sudoku->GroupSize();
+    int y = index / sudoku->GroupSize();
+    while (sudoku->IsCellGiven(x, y) == true)
+    {
+        index++;
+        x = index % sudoku->GroupSize();
+        y = index / sudoku->GroupSize();
+    }
+    while (index >= 0 && index < sudoku->NumberOfCells())
+    {
+        x = index % sudoku->GroupSize();
+        y = index / sudoku->GroupSize();
+        bool ableToItterate = false;
+        for (int value = sudoku->GetCellValue(x, y) + 1; value <= sudoku->GroupSize(); value++)
+        {
+            if (sudoku->IsValidPlacement(x, y, value))
+            {
+                sudoku->SetCellValue(x, y, value);
+                ableToItterate = true;
+                break;
+            }
+        }
+        if (ableToItterate)
+        {
+            index++;
+            x = index % sudoku->GroupSize();
+            y = index / sudoku->GroupSize();
+            while (sudoku->IsCellGiven(x, y) == true)
+            {
+                index++;
+                x = index % sudoku->GroupSize();
+                y = index / sudoku->GroupSize();
+            };
+        }
+        else
+        {
+            sudoku->SetCellValue(x, y, 0);
+            index--;
+            x = index % sudoku->GroupSize();
+            y = index / sudoku->GroupSize();
+            while (sudoku->IsCellGiven(x, y) == true)
+            {
+                index--;
+                x = index % sudoku->GroupSize();
+                y = index / sudoku->GroupSize();
+            };
+        }
+    }
+    return sudoku;
 }
 std::string Sudoku::ToString() const
 {

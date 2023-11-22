@@ -18,6 +18,7 @@ public:
         BOX
     };
     Sudoku(int _size, const int *input);
+    Sudoku(const Sudoku *input);
     ~Sudoku();
     bool IsSolved() const;
     bool IsValid() const;
@@ -28,6 +29,7 @@ public:
     void SetCellValue(int x, int y, int val);
     int NumberOfCells() const;
     int GroupSize() const;
+    int Size() const;
     Sudoku *Solution() const;
     std::string ToString() const;
     long Hash() const;
