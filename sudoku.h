@@ -20,11 +20,12 @@ public:
     Sudoku(int _size, const int *input);
     ~Sudoku();
     bool IsSolved() const;
-    bool IsSolved(Group group, int number) const;
+    bool IsValid() const;
+    bool IsValid(Group group, int number) const;
     bool IsCellOkay(int x, int y) const;
     bool IsCellGiven(int x, int y) const;
     int GetCellValue(int x, int y) const;
-    int SetCellValue(int x, int y, int val);
+    void SetCellValue(int x, int y, int val);
     int NumberOfCells() const;
     int GroupSize() const;
     Sudoku *Solution() const;

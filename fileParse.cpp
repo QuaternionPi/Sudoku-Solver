@@ -9,25 +9,29 @@ Written by David Wiebe
 #include <unistd.h>
 #include <fstream>
 
-#include <iostream>
-
 Sudoku *sudokuFromFile(const char *filePath)
 {
     char *file = loadText(filePath);
     replaceChar(file, '\n', ' ');
-
     const char **tokens = (const char **)split(file, " ");
     int *numbers = selectNumbers(tokens);
     int size = 3;
 
-    return new Sudoku(size, numbers);
-}
+    Sudoku *sudoku = new Sudoku(size, numbers);
+    delete file;
+    for (int i = 0; tokens[i] != nullptr; i++)
+    {
+        delete tokens[i];
+    }
+    delete tokens;
+    delete numbers;
 
+    return sudoku;
+}
 bool fileExists(const char *filePath)
 {
     return (access(filePath, F_OK) != -1);
 }
-
 char **split(const char *input, const char *delimiter)
 {
     int delimiterLength = strlen(delimiter);
@@ -69,7 +73,6 @@ char **split(const char *input, const char *delimiter)
     output[count] = NULL;
     return output;
 }
-
 bool match(const char *source, const char *compair)
 {
     while (*compair != 0)
@@ -83,7 +86,6 @@ bool match(const char *source, const char *compair)
     }
     return true;
 }
-
 void replaceChar(char *input, char find, char replace)
 {
     for (; *input != 0; input++)
@@ -92,7 +94,6 @@ void replaceChar(char *input, char find, char replace)
             *input = replace;
     }
 }
-
 char *loadText(const char *filePath)
 {
     FILE *f = fopen(filePath, "rb");
@@ -107,7 +108,6 @@ char *loadText(const char *filePath)
     string[fsize] = 0;
     return string;
 }
-
 int *selectNumbers(const char **tokens)
 {
     int *numbers = new int[100000];
@@ -123,7 +123,6 @@ int *selectNumbers(const char **tokens)
     }
     return numbers;
 }
-
 bool isNumber(const char *string)
 {
     int i = 0;

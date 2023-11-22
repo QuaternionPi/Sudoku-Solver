@@ -77,6 +77,7 @@ int solveHelper(int argc, char **argv)
     }
     return 0;
 }
+
 int solveFileHelper(int argc, char **argv)
 {
     if (argc != 3)
@@ -86,6 +87,7 @@ int solveFileHelper(int argc, char **argv)
     const char *filePath = argv[2];
     Sudoku *sudoku = sudokuFromFile(filePath);
     std::cout << sudoku->ToString() << std::endl;
+
     return 0;
 }
 int testFileHelper(int argc, char **argv)
@@ -96,6 +98,7 @@ int testFileHelper(int argc, char **argv)
     }
     return 0;
 }
+
 int testScriptHelper(int argc, char **argv)
 {
     if (argc != 3)

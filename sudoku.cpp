@@ -29,11 +29,76 @@ Sudoku::~Sudoku()
 
 bool Sudoku::IsSolved() const
 {
-    return false;
+    if (IsValid() == false)
+        return false;
+    for (int col = 0; col < GroupSize(); col++)
+    {
+        for (int row = 0; row < GroupSize(); row++)
+        {
+            if (GetCellValue(col, row) == 0)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
-bool Sudoku::IsSolved(Group group, int number) const
+bool Sudoku::IsValid() const
 {
-    return false;
+    for (int i = 0; i < GroupSize(); i++)
+    {
+        bool solved = true;
+        solved &= IsValid(ROW, i);
+        solved &= IsValid(COLUMN, i);
+        solved &= IsValid(BOX, i);
+        if (solved == false)
+            return false;
+    }
+    return true;
+}
+bool Sudoku::IsValid(Group group, int number) const
+{
+    int cellValues[GroupSize()];
+    switch (group)
+    {
+    case ROW:
+        for (int col = 0; col < GroupSize(); col++)
+        {
+            cellValues[col] = GetCellValue(col, number);
+        }
+    case COLUMN:
+        for (int row = 0; row < GroupSize(); row++)
+        {
+            cellValues[row] = GetCellValue(number, row);
+        }
+    case BOX:
+        int i = 0;
+        int xOffset = (number % size) * size;
+        int yOffset = (number / size) * size;
+        for (int col = xOffset; col < size + xOffset; col++)
+        {
+            for (int row = yOffset; row < size + yOffset; row++)
+            {
+                cellValues[i] = GetCellValue(col, row);
+                i++;
+            }
+        }
+    }
+    for (int i = 0; i < GroupSize(); i++)
+    {
+        int val = cellValues[i];
+        if (val == 0)
+            continue;
+        for (int j = i + 1; j < GroupSize(); j++)
+        {
+            int otherVal = cellValues[j];
+            if (val == otherVal)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 bool Sudoku::IsCellOkay(int x, int y) const
 {
@@ -41,16 +106,18 @@ bool Sudoku::IsCellOkay(int x, int y) const
 }
 bool Sudoku::IsCellGiven(int x, int y) const
 {
-    return false;
+    int index = x + y * GroupSize();
+    return cells[index].IsGiven();
 }
 int Sudoku::GetCellValue(int x, int y) const
 {
     int index = x + y * GroupSize();
     return cells[index].GetValue();
 }
-int Sudoku::SetCellValue(int x, int y, int val)
+void Sudoku::SetCellValue(int x, int y, int val)
 {
-    return -2;
+    int index = x + y * GroupSize();
+    cells[index].SetValue(val);
 }
 int Sudoku::NumberOfCells() const
 {
