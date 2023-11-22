@@ -1,12 +1,12 @@
 /*
-Sudoku Header
+Sudoku Solver
 Written by David Wiebe
 */
 
 #pragma once
 #include <string>
 
-#define UNKNOWN_VALUE -1
+#define UNKNOWN_VALUE 0
 
 class Sudoku
 {
@@ -29,21 +29,14 @@ public:
     int GroupSize() const;
     Sudoku *Solution() const;
     std::string ToString() const;
+    long Hash() const;
 
 private:
     class Cell
     {
     public:
-        Cell()
-        {
-            isGiven = false;
-            value = 0;
-        }
-        Cell(int val)
-        {
-            isGiven = (val != UNKNOWN_VALUE);
-            value = val;
-        }
+        Cell();
+        Cell(int val);
         bool IsGiven() const;
         int GetValue() const;
         void SetValue(int val);
@@ -55,3 +48,5 @@ private:
     Cell *cells;
     int size;
 };
+
+bool test(Sudoku *sudoku);

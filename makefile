@@ -5,8 +5,8 @@ LDLIBS= -lm
 %.o : %.cpp
 	$(CXX) -c $(CCFLAGS) $<
 
-sudoku: sudoku.o CLI.o
-	$(CXX) -o sudoku CLI.o sudoku.o $(LDLIBS)
+sudoku: fileParse.o sudoku.o CLI.o 
+	$(CXX) -o CLI CLI.o sudoku.o fileParse.o $(LDLIBS)
 	rm -f *.o sudoku
 
 clean:

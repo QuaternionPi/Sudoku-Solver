@@ -4,6 +4,7 @@ Written by David Wiebe
 */
 
 #include "sudoku.h"
+#include "fileParse.h"
 #include <iostream>
 #include <string.h>
 #include <string>
@@ -28,7 +29,7 @@ InputCase parseFirstInput(char *input);
 
 int main(int argc, char *argv[])
 {
-    if (argc <= 0)
+    if (argc <= 1)
     {
         printHelp();
         return 0;
@@ -60,9 +61,19 @@ int main(int argc, char *argv[])
 
 int solveHelper(int argc, char **argv)
 {
+    std::cout << argc << std::endl;
     if (argc != 2)
     {
         throw std::invalid_argument("Solve mode expects 0 arguments");
+    }
+    char *inputFilePath = argv[2];
+    if (inputFilePath == nullptr)
+    {
+        throw std::invalid_argument("Input file path cannot be null");
+    }
+    if (fileExists(inputFilePath) == false)
+    {
+        throw std::invalid_argument("Input file does not exist");
     }
     return 0;
 }
@@ -117,7 +128,6 @@ void printHelp()
 
 InputCase parseFirstInput(char *input)
 {
-
     if (strcmp(input, "-h") == 0 || strcmp(input, "h") == 0 || strcmp(input, "help") == 0 || strcmp(input, "-help") == 0)
     {
         return HELP;

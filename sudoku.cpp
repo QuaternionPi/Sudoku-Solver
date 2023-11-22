@@ -67,7 +67,27 @@ std::string Sudoku::ToString() const
 {
     return "";
 }
+long Sudoku::Hash() const
+{
+    long hash_value = 0;
+    for (Cell *cell = cells; cell < cells + NumberOfCells(); cell++)
+    {
+        hash_value *= 3;
+        hash_value += cell->GetValue();
+    }
+    return hash_value;
+}
 
+Sudoku::Cell::Cell()
+{
+    isGiven = false;
+    value = 0;
+}
+Sudoku::Cell::Cell(int val)
+{
+    isGiven = (val != UNKNOWN_VALUE);
+    value = val;
+}
 bool Sudoku::Cell::IsGiven() const
 {
     return false;
@@ -78,4 +98,14 @@ int Sudoku::Cell::GetValue() const
 }
 void Sudoku::Cell::SetValue(int val)
 {
+}
+
+bool test(Sudoku *input, Sudoku *compair)
+{
+    Sudoku *solution = input->Solution();
+    long solutionHash = solution->Hash();
+    long compairHash = compair->Hash();
+
+    delete solution;
+    return solutionHash == compairHash;
 }
