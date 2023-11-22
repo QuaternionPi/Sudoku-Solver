@@ -47,11 +47,11 @@ bool Sudoku::IsValid() const
 {
     for (int i = 0; i < GroupSize(); i++)
     {
-        bool solved = true;
-        solved &= IsValid(ROW, i);
-        solved &= IsValid(COLUMN, i);
-        solved &= IsValid(BOX, i);
-        if (solved == false)
+        bool valid = true;
+        valid &= IsValid(ROW, i);
+        valid &= IsValid(COLUMN, i);
+        valid &= IsValid(BOX, i);
+        if (valid == false)
             return false;
     }
     return true;
@@ -100,9 +100,43 @@ bool Sudoku::IsValid(Group group, int number) const
     }
     return true;
 }
-bool Sudoku::IsCellOkay(int x, int y) const
+bool Sudoku::IsValidPlacement(int x, int y, int val) const
 {
-    return false;
+    int rowValues[GroupSize()];
+    int colValues[GroupSize()];
+    int boxValues[GroupSize()];
+
+    for (int col = 0; col < GroupSize(); col++)
+    {
+        colValues[col] = GetCellValue(col, y);
+    }
+    for (int row = 0; row < GroupSize(); row++)
+    {
+        rowValues[row] = GetCellValue(x, row);
+    }
+    int box = 0;
+    int xOffset = (x / size) * size;
+    int yOffset = (y / size) * size;
+    for (int col = xOffset; col < size + xOffset; col++)
+    {
+        for (int row = yOffset; row < size + yOffset; row++)
+        {
+            boxValues[box] = GetCellValue(col, row);
+            box++;
+        }
+    }
+    for (int i = 0; i < GroupSize(); i++)
+    {
+        bool valid = true;
+        valid &= val != rowValues[i];
+        valid &= val != colValues[i];
+        valid &= val != boxValues[i];
+        if (valid == false)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 bool Sudoku::IsCellGiven(int x, int y) const
 {

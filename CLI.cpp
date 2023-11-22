@@ -86,8 +86,12 @@ int solveFileHelper(int argc, char **argv)
     }
     const char *filePath = argv[2];
     Sudoku *sudoku = sudokuFromFile(filePath);
+    Sudoku *solution = sudoku->Solution();
     std::cout << sudoku->ToString() << std::endl;
+    std::cout << solution->ToString() << std::endl;
 
+    delete sudoku;
+    delete solution;
     return 0;
 }
 int testFileHelper(int argc, char **argv)

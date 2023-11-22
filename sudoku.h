@@ -22,7 +22,7 @@ public:
     bool IsSolved() const;
     bool IsValid() const;
     bool IsValid(Group group, int number) const;
-    bool IsCellOkay(int x, int y) const;
+    bool IsValidPlacement(int x, int y, int val) const;
     bool IsCellGiven(int x, int y) const;
     int GetCellValue(int x, int y) const;
     void SetCellValue(int x, int y, int val);
