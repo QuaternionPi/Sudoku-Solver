@@ -60,26 +60,34 @@ int main(int argc, char *argv[])
 
 int solveHelper(int argc, char **argv)
 {
-    std::cout
-        << "Solve\n";
+    if (argc != 2)
+    {
+        throw std::invalid_argument("Solve mode expects 0 arguments");
+    }
     return 0;
 }
 int solveFileHelper(int argc, char **argv)
 {
-    std::cout
-        << "Solve File\n";
+    if (argc != 3)
+    {
+        throw std::invalid_argument("Solve-File mode expects 1 argument");
+    }
     return 0;
 }
 int testFileHelper(int argc, char **argv)
 {
-    std::cout
-        << "Test File\n";
+    if (argc != 4)
+    {
+        throw std::invalid_argument("Test-File mode expects 2 arguments");
+    }
     return 0;
 }
 int testScriptHelper(int argc, char **argv)
 {
-    std::cout
-        << "Test Script\n";
+    if (argc != 3)
+    {
+        throw std::invalid_argument("Test-Script mode expects 1 argument");
+    }
     return 0;
 }
 
