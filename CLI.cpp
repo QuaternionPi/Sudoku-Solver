@@ -83,6 +83,9 @@ int solveFileHelper(int argc, char **argv)
     {
         throw std::invalid_argument("Solve-File mode expects 1 argument");
     }
+    const char *filePath = argv[2];
+    Sudoku *sudoku = sudokuFromFile(filePath);
+    std::cout << sudoku->ToString() << std::endl;
     return 0;
 }
 int testFileHelper(int argc, char **argv)

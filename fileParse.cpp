@@ -5,21 +5,22 @@ Written by David Wiebe
 
 #include "sudoku.h"
 #include "fileParse.h"
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <fstream>
 
+#include <iostream>
+
 Sudoku *sudokuFromFile(const char *filePath)
 {
-    const char *file = loadText(filePath);
-    const char **tokens = split(file, " ");
-    const int *numbers = selectNumbers(tokens);
-    int size = 0;
+    char *file = loadText(filePath);
+    replaceChar(file, '\n', ' ');
 
-    int inputs[size * size * size * size];
+    const char **tokens = (const char **)split(file, " ");
+    int *numbers = selectNumbers(tokens);
+    int size = 3;
 
-    return new Sudoku(1, NULL);
+    return new Sudoku(size, numbers);
 }
 
 bool fileExists(const char *filePath)
@@ -27,11 +28,11 @@ bool fileExists(const char *filePath)
     return (access(filePath, F_OK) != -1);
 }
 
-const char **split(const char *input, const char *delimiter)
+char **split(const char *input, const char *delimiter)
 {
     int delimiterLength = strlen(delimiter);
 
-    const char **output = new const char *[10000];
+    char **output = new char *[100000];
     int count = 0;
     const char *start = input;
     int runLength = 0;
@@ -44,7 +45,7 @@ const char **split(const char *input, const char *delimiter)
                 char *token = new char[runLength + 1];
                 output[count] = token;
                 memccpy(token, input - runLength, 0, runLength);
-                token[runLength + 1] = 0;
+                token[runLength] = 0;
                 count++;
                 runLength = 0;
                 input += delimiterLength;
@@ -60,7 +61,12 @@ const char **split(const char *input, const char *delimiter)
             runLength++;
         }
     }
-    output[count + 1] = NULL;
+    char *token = new char[runLength + 1];
+    output[count] = token;
+    memccpy(token, input - runLength, 0, runLength);
+    token[runLength] = 0;
+    count++;
+    output[count] = NULL;
     return output;
 }
 
@@ -78,9 +84,18 @@ bool match(const char *source, const char *compair)
     return true;
 }
 
-const char *loadText(const char *filePath)
+void replaceChar(char *input, char find, char replace)
 {
-    FILE *f = fopen("textfile.txt", "rb");
+    for (; *input != 0; input++)
+    {
+        if (*input == find)
+            *input = replace;
+    }
+}
+
+char *loadText(const char *filePath)
+{
+    FILE *f = fopen(filePath, "rb");
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);
@@ -95,5 +110,34 @@ const char *loadText(const char *filePath)
 
 int *selectNumbers(const char **tokens)
 {
-    return NULL;
+    int *numbers = new int[100000];
+    int foundNumbers = 0;
+    for (int i = 0; tokens[i] != nullptr; i++)
+    {
+        const char *string = tokens[i];
+        if (isNumber(string))
+        {
+            numbers[foundNumbers] = atoi(string);
+            foundNumbers++;
+        }
+    }
+    return numbers;
+}
+
+bool isNumber(const char *string)
+{
+    int i = 0;
+
+    if (isdigit(string[0]) == false && (string[0] != '-' || isdigit(string[1]) == false))
+    {
+        return false;
+    }
+    for (int i = 1; string[i] != 0; i++)
+    {
+        if (isdigit(string[i]) == false)
+        {
+            return false;
+        }
+    }
+    return true;
 }

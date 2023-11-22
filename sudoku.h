@@ -17,7 +17,7 @@ public:
         COLUMN,
         BOX
     };
-    Sudoku(int _size, int *input);
+    Sudoku(int _size, const int *input);
     ~Sudoku();
     bool IsSolved() const;
     bool IsSolved(Group group, int number) const;
