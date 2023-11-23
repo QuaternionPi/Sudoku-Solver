@@ -13,12 +13,14 @@ enum InputCase
 {
     UNKNOWN = 0,
     HELP,
+    PRINT_FILE,
     SOLVE,
     SOLVE_FILE,
     TEST_FILE,
     TEST_SCRIPT
 };
 
+int printHelper(int argc, char **argv);
 int solveHelper(int argc, char **argv);
 int solveFileHelper(int argc, char **argv);
 int testFileHelper(int argc, char **argv);
@@ -44,6 +46,9 @@ int main(int argc, char *argv[])
     case (HELP):
         printHelp();
         return 0;
+    case (PRINT_FILE):
+        printHelper(argc, argv);
+        return 0;
     case (SOLVE):
         solveHelper(argc, argv);
         return 0;
@@ -57,6 +62,20 @@ int main(int argc, char *argv[])
         testScriptHelper(argc, argv);
         return 0;
     }
+}
+
+int printHelper(int argc, char **argv)
+{
+    if (argc != 3)
+    {
+        throw std::invalid_argument("Solve-File mode expects 1 argument");
+    }
+    const char *filePath = argv[2];
+    Sudoku *sudoku = sudokuFromFile(filePath);
+    std::cout << sudoku->ToString() << std::endl;
+
+    delete sudoku;
+    return 0;
 }
 
 int solveHelper(int argc, char **argv)
@@ -129,6 +148,7 @@ void printHelp()
     std::cout
         << "Sudoku Solver Written by David Wiebe\n"
         << "To use run one of: \n"
+        << "--Print-File\n"
         << "--Solve\n"
         << "--Solve-File <Input>\n"
         << "--Test-File <Input> <Compair>\n"
@@ -141,6 +161,10 @@ InputCase parseFirstInput(char *input)
     if (strcmp(input, "-h") == 0 || strcmp(input, "h") == 0 || strcmp(input, "help") == 0 || strcmp(input, "-help") == 0)
     {
         return HELP;
+    }
+    if (strcmp(input, "--print-file") == 0)
+    {
+        return PRINT_FILE;
     }
     if (strcmp(input, "--solve") == 0)
     {
