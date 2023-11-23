@@ -14,7 +14,6 @@ enum InputCase
     UNKNOWN = 0,
     HELP,
     PRINT_FILE,
-    SOLVE,
     SOLVE_FILE,
     TEST_FILE,
     TEST_SCRIPT
@@ -49,9 +48,6 @@ int main(int argc, char *argv[])
     case (PRINT_FILE):
         printHelper(argc, argv);
         return 0;
-    case (SOLVE):
-        solveHelper(argc, argv);
-        return 0;
     case (SOLVE_FILE):
         solveFileHelper(argc, argv);
         return 0;
@@ -78,25 +74,6 @@ int printHelper(int argc, char **argv)
     return 0;
 }
 
-int solveHelper(int argc, char **argv)
-{
-    std::cout << argc << std::endl;
-    if (argc != 2)
-    {
-        throw std::invalid_argument("Solve mode expects 0 arguments");
-    }
-    char *inputFilePath = argv[2];
-    if (inputFilePath == nullptr)
-    {
-        throw std::invalid_argument("Input file path cannot be null");
-    }
-    if (fileExists(inputFilePath) == false)
-    {
-        throw std::invalid_argument("Input file does not exist");
-    }
-    return 0;
-}
-
 int solveFileHelper(int argc, char **argv)
 {
     if (argc != 3)
@@ -104,6 +81,15 @@ int solveFileHelper(int argc, char **argv)
         throw std::invalid_argument("Solve-File mode expects 1 argument");
     }
     const char *filePath = argv[2];
+    if (filePath == nullptr)
+    {
+        throw std::invalid_argument("Input file path cannot be null");
+    }
+    if (fileExists(filePath) == false)
+    {
+        throw std::invalid_argument("Input file does not exist");
+    }
+
     Sudoku *sudoku = sudokuFromFile(filePath);
     Sudoku *solution = sudoku->Solution();
     std::cout << sudoku->ToString() << std::endl;
@@ -119,6 +105,41 @@ int testFileHelper(int argc, char **argv)
     {
         throw std::invalid_argument("Test-File mode expects 2 arguments");
     }
+    const char *inputFilePath = argv[2];
+    if (inputFilePath == nullptr)
+    {
+        throw std::invalid_argument("Input file path cannot be null");
+    }
+    if (fileExists(inputFilePath) == false)
+    {
+        throw std::invalid_argument("Input file does not exist");
+    }
+
+    const char *compairFilePath = argv[3];
+    if (compairFilePath == nullptr)
+    {
+        throw std::invalid_argument("Compair file path cannot be null");
+    }
+    if (fileExists(compairFilePath) == false)
+    {
+        throw std::invalid_argument("Compair file does not exist");
+    }
+
+    Sudoku *input = sudokuFromFile(inputFilePath);
+    Sudoku *compair = sudokuFromFile(compairFilePath);
+
+    bool testResult = test(input, compair);
+
+    delete input;
+    delete compair;
+
+    std::cout
+        << "TEST "
+        << (testResult
+                ? "PASSED"
+                : "FAILED")
+        << std::endl;
+
     return 0;
 }
 
@@ -165,10 +186,6 @@ InputCase parseFirstInput(char *input)
     if (strcmp(input, "--print-file") == 0)
     {
         return PRINT_FILE;
-    }
-    if (strcmp(input, "--solve") == 0)
-    {
-        return SOLVE;
     }
     if (strcmp(input, "--solve-file") == 0)
     {

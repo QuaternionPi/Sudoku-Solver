@@ -298,7 +298,7 @@ void Sudoku::Cell::SetValue(int val)
     value = val;
 }
 
-bool test(Sudoku *input, Sudoku *compair)
+bool test(const Sudoku *input, const Sudoku *compair)
 {
     Sudoku *solution = input->Solution();
     long solutionHash = solution->Hash();

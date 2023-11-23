@@ -1,1 +1,2 @@
 tests/sudoku_1.txt solutions/sudoku_1.txt
+tests/sudoku_2.txt solutions/sudoku_2.txt

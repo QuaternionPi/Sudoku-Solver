@@ -52,4 +52,4 @@ private:
     int size;
 };
 
-bool test(Sudoku *sudoku);
+bool test(const Sudoku *input, const Sudoku *compair);
