@@ -70,7 +70,7 @@ int printHelper(int argc, char **argv)
 {
     if (argc != 3)
     {
-        throw std::invalid_argument("Solve-File mode expects 1 argument");
+        throw std::invalid_argument("Print mode expects 1 argument");
     }
     const char *filePath = argv[2];
     Sudoku *sudoku = sudokuFromFile(filePath);
@@ -84,7 +84,7 @@ int generateHelper(int argc, char **argv)
 {
     if (argc != 3 && argc != 4)
     {
-        throw std::invalid_argument("Solve-File mode expects 1 or 2 arguments");
+        throw std::invalid_argument("Generate mode expects 1 or 2 arguments");
     }
     const int size = atoi(argv[2]);
     int seed;
@@ -122,7 +122,6 @@ int solveFileHelper(int argc, char **argv)
 
     Sudoku *sudoku = sudokuFromFile(filePath);
     Sudoku *solution = sudoku->Solution();
-    std::cout << sudoku->ToString() << std::endl;
     std::cout << solution->ToString() << std::endl;
 
     delete sudoku;
