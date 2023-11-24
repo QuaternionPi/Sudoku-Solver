@@ -15,7 +15,10 @@ Sudoku *sudokuFromFile(const char *filePath)
     replaceChar(file, '\n', ' ');
     const char **tokens = (const char **)split(file, " ");
     int *numbers = selectNumbers(tokens);
-    int size = 3;
+
+    int size;
+    for (size = 0; isNumber(tokens[size]); size++)
+        ;
 
     Sudoku *sudoku = new Sudoku(size, numbers);
     delete file;
