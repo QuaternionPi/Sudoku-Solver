@@ -247,11 +247,11 @@ void printHelp()
     std::cout
         << "Sudoku Solver Written by David Wiebe\n"
         << "To use run one of: \n"
-        << "--Print-File\n"
+        << "--Print-File <Filepath>\n"
         << "--Generate <size> <optional: seed>\n"
-        << "--Solve-File <Input>\n"
-        << "--Test-File <Input> <Compair>\n"
-        << "--Test-Script <Test Script>\n"
+        << "--Solve-File <Filepath>\n"
+        << "--Test-File <Input Filepath> <Compair Filepath>\n"
+        << "--Test-Script <Script Filepath>\n"
         << std::endl;
 }
 
