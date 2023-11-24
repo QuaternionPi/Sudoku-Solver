@@ -149,6 +149,49 @@ int testScriptHelper(int argc, char **argv)
     {
         throw std::invalid_argument("Test-Script mode expects 1 argument");
     }
+
+    const char *testFilePath = argv[2];
+    if (testFilePath == nullptr)
+    {
+        throw std::invalid_argument("Input file path cannot be null");
+    }
+    if (fileExists(testFilePath) == false)
+    {
+        throw std::invalid_argument("Input file does not exist");
+    }
+
+    char *fileData = loadText(testFilePath);
+    replaceChar(fileData, '\n', ' ');
+    const char **filePaths = (const char **)split(fileData, " ");
+    for (int i = 0; filePaths[i] != 0; i++)
+    {
+        const char *filePath = filePaths[i];
+        if (fileExists(filePath) == false)
+        {
+            throw std::invalid_argument("File in test script does not exist");
+        }
+    }
+    for (int i = 0; filePaths[i] != 0; i += 2)
+    {
+        const char *inputFilePath = filePaths[i];
+        const char *compairFilePath = filePaths[i + 1];
+        Sudoku *input = sudokuFromFile(inputFilePath);
+        Sudoku *compair = sudokuFromFile(compairFilePath);
+
+        bool testResult = test(input, compair);
+
+        delete input;
+        delete compair;
+
+        std::cout
+            << "TEST NUMBER "
+            << i / 2
+            << ": "
+            << (testResult
+                    ? "PASSED"
+                    : "FAILED")
+            << std::endl;
+    }
     return 0;
 }
 
