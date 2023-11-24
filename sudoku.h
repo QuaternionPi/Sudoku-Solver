@@ -27,6 +27,7 @@ public:
     bool IsCellGiven(int x, int y) const;
     int GetCellValue(int x, int y) const;
     void SetCellValue(int x, int y, int val);
+    int NumberOfSolutions() const;
     int NumberOfCells() const;
     int GroupSize() const;
     int Size() const;

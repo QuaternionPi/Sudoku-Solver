@@ -3,11 +3,11 @@ Sudoku File Parser
 Written by David Wiebe
 */
 
-#include "sudoku.h"
-#include "fileParse.h"
 #include <string.h>
 #include <unistd.h>
 #include <fstream>
+#include "sudoku.h"
+#include "fileParse.h"
 
 Sudoku *sudokuFromFile(const char *filePath)
 {
@@ -21,13 +21,13 @@ Sudoku *sudokuFromFile(const char *filePath)
         ;
 
     Sudoku *sudoku = new Sudoku(size, numbers);
-    delete file;
+    delete[] file;
     for (int i = 0; tokens[i] != nullptr; i++)
     {
-        delete tokens[i];
+        delete[] tokens[i];
     }
-    delete tokens;
-    delete numbers;
+    delete[] tokens;
+    delete[] numbers;
 
     return sudoku;
 }
@@ -41,7 +41,6 @@ char **split(const char *input, const char *delimiter)
 
     char **output = new char *[100000];
     int count = 0;
-    const char *start = input;
     int runLength = 0;
     while (*input != 0)
     {

@@ -3,24 +3,27 @@ Sudoku Solver Command Line Interface
 Written by David Wiebe
 */
 
-#include "sudoku.h"
-#include "fileParse.h"
 #include <iostream>
 #include <string.h>
 #include <string>
+#include <time.h>
+#include "sudoku.h"
+#include "fileParse.h"
+#include "generator.h"
 
 enum InputCase
 {
     UNKNOWN = 0,
     HELP,
     PRINT_FILE,
+    GENERATE,
     SOLVE_FILE,
     TEST_FILE,
     TEST_SCRIPT
 };
 
 int printHelper(int argc, char **argv);
-int solveHelper(int argc, char **argv);
+int generateHelper(int argc, char **argv);
 int solveFileHelper(int argc, char **argv);
 int testFileHelper(int argc, char **argv);
 int testScriptHelper(int argc, char **argv);
@@ -48,6 +51,9 @@ int main(int argc, char *argv[])
     case (PRINT_FILE):
         printHelper(argc, argv);
         return 0;
+    case (GENERATE):
+        generateHelper(argc, argv);
+        return 0;
     case (SOLVE_FILE):
         solveFileHelper(argc, argv);
         return 0;
@@ -68,6 +74,30 @@ int printHelper(int argc, char **argv)
     }
     const char *filePath = argv[2];
     Sudoku *sudoku = sudokuFromFile(filePath);
+    std::cout << sudoku->ToString() << std::endl;
+
+    delete sudoku;
+    return 0;
+}
+
+int generateHelper(int argc, char **argv)
+{
+    if (argc != 3 && argc != 4)
+    {
+        throw std::invalid_argument("Solve-File mode expects 1 or 2 arguments");
+    }
+    const int size = atoi(argv[2]);
+    int seed;
+    if (argc == 4)
+    {
+        seed = atoi(argv[3]);
+    }
+    else
+    {
+        seed = time(0);
+    }
+
+    Sudoku *sudoku = generateSudoku(size, seed);
     std::cout << sudoku->ToString() << std::endl;
 
     delete sudoku;
@@ -192,6 +222,12 @@ int testScriptHelper(int argc, char **argv)
                     : "FAILED")
             << std::endl;
     }
+    delete[] fileData;
+    for (int i = 0; filePaths[i] != 0; i++)
+    {
+        delete[] filePaths[i];
+    }
+    delete[] filePaths;
     return 0;
 }
 
@@ -213,6 +249,7 @@ void printHelp()
         << "Sudoku Solver Written by David Wiebe\n"
         << "To use run one of: \n"
         << "--Print-File\n"
+        << "--Generate <size> <optional: seed>"
         << "--Solve\n"
         << "--Solve-File <Input>\n"
         << "--Test-File <Input> <Compair>\n"
@@ -229,6 +266,10 @@ InputCase parseFirstInput(char *input)
     if (strcmp(input, "--print-file") == 0)
     {
         return PRINT_FILE;
+    }
+    if (strcmp(input, "--generate") == 0)
+    {
+        return GENERATE;
     }
     if (strcmp(input, "--solve-file") == 0)
     {

@@ -34,7 +34,7 @@ Sudoku::Sudoku(const Sudoku *input)
 }
 Sudoku::~Sudoku()
 {
-    delete cells;
+    delete[] cells;
 }
 
 bool Sudoku::IsSolved() const
@@ -166,6 +166,82 @@ void Sudoku::SetCellValue(int x, int y, int val)
 {
     int index = x + y * GroupSize();
     cells[index].SetValue(val);
+}
+int Sudoku::NumberOfSolutions() const
+{
+    if (IsValid() == false)
+    {
+        return 0;
+    }
+    Sudoku *sudoku = new Sudoku(this);
+    int index = 0;
+    int x = index % sudoku->GroupSize();
+    int y = index / sudoku->GroupSize();
+    while (sudoku->IsCellGiven(x, y) == true)
+    {
+        index++;
+        x = index % sudoku->GroupSize();
+        y = index / sudoku->GroupSize();
+    }
+    int count = 0;
+
+    while (index >= 0)
+    {
+        while (index >= 0 && index < sudoku->NumberOfCells())
+        {
+            x = index % sudoku->GroupSize();
+            y = index / sudoku->GroupSize();
+            bool ableToItterate = false;
+            for (int value = sudoku->GetCellValue(x, y) + 1; value <= sudoku->GroupSize(); value++)
+            {
+                if (sudoku->IsValidPlacement(x, y, value))
+                {
+                    sudoku->SetCellValue(x, y, value);
+                    ableToItterate = true;
+                    break;
+                }
+            }
+            if (ableToItterate)
+            {
+                index++;
+                x = index % sudoku->GroupSize();
+                y = index / sudoku->GroupSize();
+                while (sudoku->IsCellGiven(x, y) == true)
+                {
+                    index++;
+                    x = index % sudoku->GroupSize();
+                    y = index / sudoku->GroupSize();
+                };
+            }
+            else
+            {
+                sudoku->SetCellValue(x, y, 0);
+                index--;
+                x = index % sudoku->GroupSize();
+                y = index / sudoku->GroupSize();
+                while (sudoku->IsCellGiven(x, y) == true)
+                {
+                    index--;
+                    x = index % sudoku->GroupSize();
+                    y = index / sudoku->GroupSize();
+                };
+            }
+        }
+        if (index > 0)
+        {
+            count++;
+            index--;
+            x = index % sudoku->GroupSize();
+            y = index / sudoku->GroupSize();
+            while (sudoku->IsCellGiven(x, y) == true)
+            {
+                index--;
+                x = index % sudoku->GroupSize();
+                y = index / sudoku->GroupSize();
+            };
+        }
+    }
+    return count;
 }
 int Sudoku::NumberOfCells() const
 {
