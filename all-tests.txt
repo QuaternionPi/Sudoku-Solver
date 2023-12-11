@@ -1,2 +1,5 @@
 tests/sudoku_1.txt solutions/sudoku_1.txt
 tests/sudoku_2.txt solutions/sudoku_2.txt
+tests/sudoku_3.txt solutions/sudoku_3.txt
+tests/sudoku_4.txt solutions/sudoku_4.txt
+tests/sudoku_5_4x4.txt solutions/sudoku_5_4x4.txt
